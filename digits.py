@@ -58,14 +58,19 @@ in_str.sort(reverse=True)
 
 new_str = []
 
-for l in range(lengths[0], 1, -1):
-    block = [word for word in in_str if len(word) >= l]
+for l in range(lengths[0], 0, -1):
+    block = [word for word in in_str if len(word) == l]
     block.sort()
-    for word in block:
-        if k > 0 and word[0] != '9':
-            new_str.append(word[:len(word)-l]+'9'+word[len(word)-l+1:])
+    new_str += block
+for l in range(lengths[0], 0, -1):
+    for i, w in enumerate(new_str):
+        c = len(w) - l
+        if k > 0 and c >= 0 and int(w[c]) < 9:
+            new_str[i] = w[:c]+'9'+w[c+1:]
             k -= 1
-        else:
-            new_str.append(word)
+            if (k <= 0):
+                break
+    if k <= 0:
+        break
 
 print(sum(int(i) for i in new_str)-start_sum)
