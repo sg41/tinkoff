@@ -54,14 +54,14 @@ start_sum = sum(digits)
 lengths = set(len(w) for w in in_str)
 
 lengths = sorted(lengths, reverse=True)
-in_str.sort(reverse=True)
+in_str.sort(reverse=True, key=lambda x: int(x))
 
 new_str = []
-
+block = dict()
 for l in range(lengths[0], 0, -1):
-    block = [word for word in in_str if len(word) == l]
-    block.sort()
-    new_str += block
+    block[l] = [word for word in in_str if len(word) == l]
+    block[l].sort(key=lambda x: int(x))
+    new_str += block[l]
 for l in range(lengths[0], 0, -1):
     for i, w in enumerate(new_str):
         c = len(w) - l
