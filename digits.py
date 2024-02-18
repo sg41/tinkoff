@@ -50,27 +50,16 @@ n, k = map(int, input().split())
 in_str = input().split()
 digits = list(map(int, in_str))
 start_sum = sum(digits)
+gains = []
+for d in digits:
+    weight = 1
+    while d > 0:
+        digit = d % 10
+        gain = (9-digit)*weight
+        gains.append(gain)
+        weight *= 10
+        d = d // 10
 
-lengths = set(len(w) for w in in_str)
-
-lengths = sorted(lengths, reverse=True)
-in_str.sort(reverse=True, key=lambda x: int(x))
-
-new_str = []
-block = dict()
-for l in range(lengths[0], 0, -1):
-    block[l] = [word for word in in_str if len(word) == l]
-    block[l].sort(key=lambda x: int(x))
-    new_str += block[l]
-for l in range(lengths[0], 0, -1):
-    for i, w in enumerate(new_str):
-        c = len(w) - l
-        if k > 0 and c >= 0 and int(w[c]) < 9:
-            new_str[i] = w[:c]+'9'+w[c+1:]
-            k -= 1
-            if (k <= 0):
-                break
-    if k <= 0:
-        break
-
-print(sum(int(i) for i in new_str)-start_sum)
+gains.sort(reverse=True)
+gains = gains[:k]
+print(sum(gains))
