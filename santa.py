@@ -25,31 +25,103 @@
 Должно выполняться условие x ≠ a_x ≠ y. Если ответов несколько — выведите любой.
 
 Если сделать это невозможно — выведите -1.
+Примеры данных
+Пример 1
+3
+1  2  3
+-1  -1
+Пример 2
+3
+1  3  1
+1  2
+
 """
 
 
+def is_cycle(path):
+    flag = 0
+    cycle = [False] * len(path)
+
+    for i in range(len(path)):
+        if cycle[flag]:
+            return False
+        else:
+            cycle[flag] = True
+            flag = path[flag]
+
+    for i in range(len(cycle)):
+        if not cycle[i]:
+            return False
+
+    return flag == 0
+
+
 n = int(input())
-a = list(map(int, input().split()))
+a = list(map(lambda x: x-1, map(int, input().split())))
+
 error = 0
 self_list = -1
 no_gift = -1
 double_gift = -1
+double_gift2 = -1
+counters = [0] * n
+for i in a:
+    counters[i] += 1
+
 for i, d in enumerate(a):
-    if (i+1) == a[i]:
+    if i == a[i]:
+        if self_list != -1:
+            error = 5
+            break
         error += 1
         self_list = i
-    if i+1 not in a:
+    if counters[a[i]] == 2:
+        if double_gift == -1:
+            double_gift = i
+        elif double_gift2 == -1:
+            double_gift2 = i
+        else:
+            error = 5
+            break
+    count = counters[i]
+    if count == 0:
+        if no_gift != -1:
+            error = 5
+            break
         no_gift = i
         error += 1
-    if a.count(i+1) > 1:
-        error += 1
-        double_gift = a.index(i+1)
-    if error > 2:
+    # if count == 2:
+    #     if double_gift != -1 and double_gift2 != -1:
+    #         error = 3
+    #         break
+    #     continue
+    if count > 2:
+        error = 5
         break
 
-if error == 2 and self_list != -1 and no_gift != -1:
-    print(self_list+1, no_gift+1)
-elif error == 2 and double_gift != -1 and no_gift != -1:
-    print(double_gift+1, no_gift+1)
-else:
+
+if error >= 5 or no_gift == -1:
     print("-1 -1")
+elif no_gift != -1:
+    for i in range(n):
+        if counters[i] == 2:
+            tmp = a[i]
+            a[i] = no_gift
+            if is_cycle(a):
+                print(i+1, no_gift+1)
+                break
+            else:
+                a[i] = tmp
+    else:
+        print("-1 -1")
+
+#     if self_list != -1:
+#         print(self_list+1, no_gift+1)
+#     elif double_gift != -1 and double_gift != no_gift:
+#         print(double_gift+1, no_gift+1)
+#     elif double_gift == no_gift:
+#         print(double_gift2+1, no_gift+1)
+#     else:
+#         print("-1 -1")
+# else:
+#     print("-1 -1")
