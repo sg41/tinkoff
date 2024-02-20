@@ -59,69 +59,46 @@ def is_cycle(path):
 n = int(input())
 a = list(map(lambda x: x-1, map(int, input().split())))
 
-error = 0
-self_list = -1
 no_gift = -1
 double_gift = -1
 double_gift2 = -1
+have_double_gift = 0
+have_no_gift = 0
+have_other_error = 0
 counters = [0] * n
+
 for i in a:
     counters[i] += 1
 
-for i, d in enumerate(a):
-    if i == a[i]:
-        if self_list != -1:
-            error = 5
-            break
-        error += 1
-        self_list = i
+for i in range(len(a)):
+    if counters[i] == 2:
+        have_double_gift += 1
     if counters[a[i]] == 2:
         if double_gift == -1:
             double_gift = i
         elif double_gift2 == -1:
             double_gift2 = i
-        else:
-            error = 5
-            break
-    count = counters[i]
-    if count == 0:
-        if no_gift != -1:
-            error = 5
-            break
+    if counters[i] == 0:
+        have_no_gift += 1
         no_gift = i
-        error += 1
-    # if count == 2:
-    #     if double_gift != -1 and double_gift2 != -1:
-    #         error = 3
-    #         break
-    #     continue
-    if count > 2:
-        error = 5
+    if counters[i] > 2:
+        have_other_error += 1
         break
 
 
-if error >= 5 or no_gift == -1:
-    print("-1 -1")
-elif no_gift != -1:
-    for i in range(n):
-        if counters[i] == 2:
-            tmp = a[i]
-            a[i] = no_gift
-            if is_cycle(a):
-                print(i+1, no_gift+1)
-                break
-            else:
-                a[i] = tmp
+if have_double_gift == 1 and have_no_gift == 1 and have_other_error == 0:
+    index = double_gift
+    tmp = a[index]
+    a[index] = no_gift
+    if is_cycle(a):
+        print(index+1, no_gift+1)
     else:
-        print("-1 -1")
-
-#     if self_list != -1:
-#         print(self_list+1, no_gift+1)
-#     elif double_gift != -1 and double_gift != no_gift:
-#         print(double_gift+1, no_gift+1)
-#     elif double_gift == no_gift:
-#         print(double_gift2+1, no_gift+1)
-#     else:
-#         print("-1 -1")
-# else:
-#     print("-1 -1")
+        a[index] = tmp
+        index = double_gift2
+        a[index] = no_gift
+        if is_cycle(a):
+            print(index+1, no_gift+1)
+        else:
+            print("-1 -1")
+else:
+    print("-1 -1")
